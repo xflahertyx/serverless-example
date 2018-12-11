@@ -1,0 +1,87 @@
+definitions: 
+  xmlEvent:
+    id: "/xmlEvent"
+    type: object
+    required:
+      - 'ns0:Envelope'
+    properties:
+      'ns0:Envelope':
+        type: object
+        required:
+          - 'ns0:Header'
+          - 'ns0:Body'
+        properties:
+          'ns0:Header':
+            type: object
+            required:
+              - 'ns0:Sender'
+              - CreationDateTime
+            properties:
+              'ns0:Sender':
+                type: object
+                required:
+                  - ReferenceId
+                properties:
+                  LogicalId:
+                    type: string
+                  ReferenceId:
+                    type: string
+              CreationDateTime:
+                type: string
+          'ns0:Body':
+            type: object
+            required:
+              - Payload
+            properties:
+              Payload:
+                type: object
+                required:
+                  - orderShipRequest
+                  - orderRequestId
+                properties:
+                  orderShipRequest:
+                    type: object
+                    required:
+                      - itemProcessSku
+                      - requestShipQuantity
+                      - customerDestination
+                      - customIdentification
+                      - shippingCarrierConfiguration
+                    properties:
+                      itemProcessSku:
+                        type: string
+                      requestShipQuantity:
+                        type: integer
+                      customerDestination:
+                        type: object
+                        required:
+                          - streetAddressOne
+                          - streetAddressTwo
+                          - city
+                          - state
+                          - zip
+                        properties:
+                          streetAddressOne:
+                            type: string
+                          streetAddressTwo:
+                            type: string
+                          city:
+                            type: string
+                          state:
+                            type: string
+                          zip:
+                            type: integer
+                      customIdentification:
+                        type: string
+                      shippingCarrierConfiguration:
+                        type: object
+                        required:
+                          - carrier
+                          - shippingServiceLevel
+                        properties:
+                          carrier:
+                            type: string
+                          shippingServiceLevel:
+                            type: string
+                  orderRequestId:
+                    type: string

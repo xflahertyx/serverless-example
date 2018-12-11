@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns0:Envelope>
+    <ns0:Header>
+        <Language>en-US</Language>
+        <Revision>1.0</Revision>
+        <ns0:Sender>
+            <LogicalId>Upstream</LogicalId>
+            <ReferenceId>0738280970656086</ReferenceId>
+        </ns0:Sender>
+        <CreationDateTime>2018-12-15T13:00:49-08:00</CreationDateTime>
+    </ns0:Header>
+    <ns0:Body>
+        <Payload>
+            <orderShipRequest>
+                <itemProcessSku>000111333</itemProcessSku>
+                <requestShipQuantity>10</requestShipQuantity>
+                <customerDestination>
+                    <streetAddressOne>2901 3rd Ave</streetAddressOne>
+                    <streetAddressTwo>STE 300</streetAddressTwo>
+                    <city>Seattle</city>
+                    <state>WA</state>
+                    <zip>98121</zip>
+                </customerDestination>
+                <customIdentification>Jane Doe</customIdentification>
+                <shippingCarrierConfiguration>
+                    <carrier>UPS</carrier>
+                    <shippingServiceLevel>Ground</shippingServiceLevel>
+                </shippingCarrierConfiguration>
+            </orderShipRequest>
+            <orderRequestId>9871g84f4539087435980435</orderRequestId>
+        </Payload>
+    </ns0:Body>
+</ns0:Envelope>

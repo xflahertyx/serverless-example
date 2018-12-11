@@ -1,0 +1,22 @@
+{
+  "name": "serverless-example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xflahertyx/serverless-example.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xflahertyx/serverless-example/issues"
+  },
+  "homepage": "https://github.com/xflahertyx/serverless-example#readme",
+  "dependencies": {
+    "serverless": "^1.32.0"
+  }
+}
