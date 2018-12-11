@@ -1,0 +1,20 @@
+{
+  "name": "event-consumer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "node-fetch": "^2.3.0"
+  },
+  "devDependencies": {
+    "aws-sdk": "2.233.1",
+    "aws-sdk-mock": "^2.0.0",
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0"
+  }
+}

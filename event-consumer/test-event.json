@@ -1,0 +1,34 @@
+{
+  "ns0:Envelope": {
+    "ns0:Header": {
+      "Language": "en-US",
+      "Revision": "1.0",
+      "ns0:Sender": {
+        "LogicalId": "Upstream",
+        "ReferenceId": "0738280970656086"
+      },
+      "CreationDateTime": "2018-12-15T13:00:49-08:00"
+    },
+    "ns0:Body": {
+      "Payload": {
+        "orderShipRequest": {
+          "itemProcessSku": "000111333",
+          "requestShipQuantity": 10,
+          "customerDestination": {
+            "streetAddressOne": "2901 3rd Ave",
+            "streetAddressTwo": "STE 300",
+            "city": "Seattle",
+            "state": "WA",
+            "zip": 98121
+          },
+          "customIdentification": "Jane Doe",
+          "shippingCarrierConfiguration": {
+            "carrier": "UPS",
+            "shippingServiceLevel": "Ground"
+          }
+        },
+        "orderRequestId": "9871g84f4539087435980435"
+      }
+    }
+  }
+}
