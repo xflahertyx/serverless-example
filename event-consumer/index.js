@@ -2,8 +2,11 @@ const AWS = require('aws-sdk');
 const fetch = require('node-fetch');
 
 const DLQ_BUCKET = process.env.DLQ_BUCKET;
+const ENDPOINT_URL = process.env.ENDPOINT_URL;
 const QUEUE_URL = process.env.QUEUE_URL;
+
 let s3;
+let sqs;
 
 const errHandler = (err, msg) => {
   const error = new Error(msg);
@@ -20,8 +23,8 @@ const sendMessageToDlq = (event, id) =>
   .promise()
   .catch(err => errHandler(err, 'failed to send event to dlq bucket'));
 
-const removeMessageFromQueue = ({ receiptHandle: ReceiptHandle }) =>
-  SQS.deleteMessage({ QueueUrl: QUEUE_URL, ReceiptHandle })
+const removeMessageFromQueue = (ReceiptHandle) =>
+  sqs.deleteMessage({ QueueUrl: QUEUE_URL, ReceiptHandle })
     .promise()
     .catch(e => errHandler(e, 'Message Removal Failure'));
 
@@ -34,11 +37,11 @@ const splitName = name => {
 };
 
 const convertToAPI = eventBody => {
+  const parsedEvent = JSON.parse(eventBody);
   const {
-    'ns0:Envelope': ns0Envelope,
-    'ns0:Body': { Payload }
-  } = eventBody;
-  const { orderShipRequest, orderReqestId } = Payload;
+    'ns0:Envelope': {'ns0:Body': { Payload }}
+  } = parsedEvent;
+  const { orderShipRequest, orderRequestId } = Payload;
   const {
     itemProcessSku: sku,
     requestShipQuantity: qty,
@@ -55,7 +58,7 @@ const convertToAPI = eventBody => {
     zip
   } = address;
   return {
-    eventId: orderReqestId,
+    eventId: orderRequestId,
     lineItems: [{ qty, sku }],
     firstName,
     lastName,
@@ -65,27 +68,26 @@ const convertToAPI = eventBody => {
   };
 };
 
-// const sendEventToEndpoint = async convertedEvent => {
-//   const url = process.env.ENDPOINT_URL;
-//   const params = {
-//     method: 'POST',
-//     body: JSON.stringify(convertedEvent),
-//     headers: {
-//       'Content-Type': 'application/json'
-//     }
-//   };
-//   const response = await fetch(url, params);
-//   const json = await response.json();
-//   return { statusCode: response.status, body: json };
-// };
+const sendEventToEndpoint = async convertedEvent => {
+  const params = {
+    method: 'POST',
+    body: JSON.stringify(convertedEvent),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+  const response = await fetch(ENDPOINT_URL, params);
+  const json = await response.json();
+  return { statusCode: response.status, body: json };
+};
 
 const processMessage = async (message) => {
+  const { body, receiptHandle } = message;
   try {
-    const { body, receiptHandle } = message;
-    console.log("event", message);
     const convertedEvent = convertToAPI(body);
-    console.log(JSON.stringify(convertedEvent));
-    // await sendEventToEndpoint(convertedEvent);
+    // for demo purposes the message will logged, but not sent to an endpoint
+    if (ENDPOINT_URL !== "false") await sendEventToEndpoint(convertedEvent);
+    console.log("event: ", JSON.stringify(convertedEvent));
     await removeMessageFromQueue(receiptHandle);
   } catch (error) {
     console.log(error);
@@ -96,7 +98,9 @@ const processMessage = async (message) => {
 
 const handler = async event => {
   s3 = new AWS.S3();
-  event.Records.forEach(processMessage);
+  sqs = new AWS.SQS();
+  const { Records: messages = [] } = event;
+  await Promise.all(messages.map(m => processMessage(m, handler)));
 };
 
 module.exports.handler = handler;

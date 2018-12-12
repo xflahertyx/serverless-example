@@ -1,0 +1,20 @@
+{
+  "Records": [
+     {
+         "messageId": "c80e8021-a70a-42c7-a470-796e1186f753",
+         "receiptHandle": "AQEBJQ+/u6NsnT5t8Q/VbVxgdUl4TMKZ5FqhksRdIQvLBhwNvADoBxYSOVeCBX",
+         "body": "{\"ns0:Envelope\":{\"ns0:Header\":{\"Language\":\"en-US\",\"Revision\":\"1.0\",\"ns0:Sender\":{\"LogicalId\":\"Upstream\",\"ReferenceId\":\"0738280970656086\"},\"CreationDateTime\":\"2018-12-15T13:00:49-08:00\"},\"ns0:Body\":{\"Payload\":{\"orderShipRequest\":{\"itemProcessSku\":\"000111333\",\"requestShipQuantity\":10,\"customerDestination\":{\"streetAddressOne\":\"2901 3rd Ave\",\"streetAddressTwo\":\"STE 300\",\"city\":\"Seattle\",\"state\":\"WA\",\"zip\":98121},\"customIdentification\":\"Jane Doe\",\"shippingCarrierConfiguration\":{\"carrier\":\"UPS\",\"shippingServiceLevel\":\"Ground\"}},\"orderRequestId\":\"9871g84f4539087435980435\"}}}}",
+         "attributes": {
+             "ApproximateReceiveCount": "3",
+             "SentTimestamp": "1529104986221",
+             "SenderId": "594035263019",
+             "ApproximateFirstReceiveTimestamp": "1529104986230"
+         },
+         "messageAttributes": {},
+         "md5OfBody": "9bb58f26192e4ba00f01e2e7b136bbd8",
+         "eventSource": "aws:sqs",
+         "eventSourceARN": "arn:aws:sqs:us-west-2:594035263019:NOTFIFOQUEUE",
+         "awsRegion": "us-west-2"
+     }
+ ]
+}

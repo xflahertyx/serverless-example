@@ -12,22 +12,23 @@ describe('eventProducerTests', () => {
   beforeEach(() => {
     AWSMock.mock('SQS', 'sendMessage', (params, callback) => {
       sqsMessageBody = JSON.parse(params.MessageBody);
-        callback(null, {});
+      callback(null, {});
     });
   });
   describe('successful event', async () => {
     afterEach(() => AWSMock.restore());
     let response;
     let order;
-    
-    beforeEach( async () => {
+
+    beforeEach(async () => {
       order = await testXmlOrder;
       response = await handler(order.toString());
     });
-    
+
     it('should send event to SQS', () => expect(response).to.equal(200));
-    it('should have an requestId', () => 
-      expect(sqsMessageBody['ns0:Envelope']['ns0:Body'].Payload.orderRequestId)
-        .to.equal("9871g84f4539087435980435"))
+    it('should have a requestId', () =>
+      expect(
+        sqsMessageBody['ns0:Envelope']['ns0:Body'].Payload.orderRequestId
+      ).to.equal('9871g84f4539087435980435'));
   });
 });
