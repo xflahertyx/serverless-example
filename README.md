@@ -1,6 +1,6 @@
 # Serverless Microservice Example
 
-Deploy a pub-sub style http service that will convert an xml payload to json and convert that json to an example API:
+Deploy a pub-sub style http service that will convert an xml payload to json and convert that json to an example external API:
 
 event-producer (AWS Lambda) -> AWS SQS Queue -> event-consumer (AWS Lambda)
 
