@@ -24,7 +24,7 @@ const sendSqsMessage = body =>
 class ValidationError extends Error {}
 
 const validate = json => {
-  const schema = yaml.safeLoad(fs.readFileSync('./event-schema.yaml', 'utf8'));
+  const schema = yaml.safeLoad(fs.readFileSync(`${__dirname}/event-schema.yaml`, 'utf8'));
   const xmlSchema = schema.definitions.xmlEvent;
   const validator = new Validator();
   const validationResult = validator.validate(json, xmlSchema);
@@ -51,10 +51,11 @@ const handler = async event => {
     const eventJson = await parseXmlToJson(body);
     validate(eventJson);
     await sendSqsMessage(eventJson);
+    console.log("send message success");
     return 200;
   } catch (error) {
     console.log(error);
-    if (err instanceof ValidationError) {
+    if (error instanceof ValidationError) {
       return 400;
     }
     return 500;
