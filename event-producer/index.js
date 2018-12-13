@@ -5,6 +5,7 @@ const yaml = require('js-yaml');
 const fs = require('fs');
 
 let sqs;
+
 const QUEUE_URL = process.env.QUEUE_URL;
 
 const errHandler = (err, msg) => {
@@ -14,17 +15,20 @@ const errHandler = (err, msg) => {
 };
 
 const sendSqsMessage = body =>
-  sqs.sendMessage({
-    QueueUrl: QUEUE_URL,
-    MessageBody: JSON.stringify(body)
-  })
-  .promise()
-  .catch(err => errHandler(err, 'failed to send message to queue'));
+  sqs
+    .sendMessage({
+      QueueUrl: QUEUE_URL,
+      MessageBody: JSON.stringify(body)
+    })
+    .promise()
+    .catch(err => errHandler(err, 'failed to send message to queue'));
 
 class ValidationError extends Error {}
 
 const validate = json => {
-  const schema = yaml.safeLoad(fs.readFileSync(`${__dirname}/event-schema.yaml`, 'utf8'));
+  const schema = yaml.safeLoad(
+    fs.readFileSync(`${__dirname}/event-schema.yaml`, 'utf8')
+  );
   const xmlSchema = schema.definitions.xmlEvent;
   const validator = new Validator();
   const validationResult = validator.validate(json, xmlSchema);
@@ -51,14 +55,14 @@ const handler = async event => {
     const eventJson = await parseXmlToJson(body);
     validate(eventJson);
     await sendSqsMessage(eventJson);
-    console.log("send message success");
-    return 200;
+    console.log('send message success');
+    return { statusCode: 200 };
   } catch (error) {
     console.log(error);
     if (error instanceof ValidationError) {
-      return 400;
+      return { statusCode: 400 };
     }
-    return 500;
+    return { statusCode: 500 };
   }
 };
 

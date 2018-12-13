@@ -15,16 +15,18 @@ const errHandler = (err, msg) => {
 };
 
 const sendMessageToDlq = (event, id) =>
-  s3.putObject({
-    Bucket: DLQ_BUCKET,
-    Key: `xml/failure/${id}`,
-    Body: event
-  })
-  .promise()
-  .catch(err => errHandler(err, 'failed to send event to dlq bucket'));
+  s3
+    .putObject({
+      Bucket: DLQ_BUCKET,
+      Key: `xml/failure/${id}`,
+      Body: event
+    })
+    .promise()
+    .catch(err => errHandler(err, 'failed to send event to dlq bucket'));
 
-const removeMessageFromQueue = (ReceiptHandle) =>
-  sqs.deleteMessage({ QueueUrl: QUEUE_URL, ReceiptHandle })
+const removeMessageFromQueue = ReceiptHandle =>
+  sqs
+    .deleteMessage({ QueueUrl: QUEUE_URL, ReceiptHandle })
     .promise()
     .catch(e => errHandler(e, 'Message Removal Failure'));
 
@@ -39,7 +41,9 @@ const splitName = name => {
 const convertToAPI = eventBody => {
   const parsedEvent = JSON.parse(eventBody);
   const {
-    'ns0:Envelope': {'ns0:Body': { Payload }}
+    'ns0:Envelope': {
+      'ns0:Body': { Payload }
+    }
   } = parsedEvent;
   const { orderShipRequest, orderRequestId } = Payload;
   const {
@@ -78,24 +82,24 @@ const sendEventToEndpoint = async convertedEvent => {
   };
   const response = await fetch(ENDPOINT_URL, params);
   const json = await response.json();
-  // TODO: more complex retry/dlq logic can be added to address 5XX vs 4XX responses 
+  // TODO: more complex retry/dlq logic can be added to address 5XX vs 4XX responses
   return { statusCode: response.status, body: json };
 };
 
-const processMessage = async (message) => {
+const processMessage = async message => {
   const { body, receiptHandle } = message;
   try {
     const convertedEvent = convertToAPI(body);
     // for demo purposes the message will logged, but not sent to an endpoint
-    if (ENDPOINT_URL !== "false") await sendEventToEndpoint(convertedEvent);
-    console.log("event: ", JSON.stringify(convertedEvent));
+    if (ENDPOINT_URL !== 'false') await sendEventToEndpoint(convertedEvent);
+    console.log('event: ', JSON.stringify(convertedEvent));
     await removeMessageFromQueue(receiptHandle);
   } catch (error) {
     console.log(error);
     await sendMessageToDlq(body);
     await removeMessageFromQueue(receiptHandle);
   }
-} 
+};
 
 const handler = async event => {
   s3 = new AWS.S3();
