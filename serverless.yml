@@ -8,21 +8,24 @@ provider:
 functions:
   event-producer:
     handler: event-producer/index.handler
+    role: sqsRole
+    environment:
+      QUEUE_URL:
+        Ref: eventQueue
     events:
       - http: 
           path: events
           method: post
-    iamRoleStatements:
-      Effect: Allow
-      Action:
-        - sqs:ListQueues
-        - sqs:SendMessageBatch
-        - sqs:SendMessage
-        - sqs:GetQueueAttributes
-      Resource: "*"
-
+    
   event-consumer: 
     handler: event-consumer/index.handler
+    role: sqsRole
+    environment:
+      ENDPOINT_URL: "false"
+      DLQ_BUCKET: 
+        Ref: dlqBucket
+      QUEUE_URL:
+        Ref: eventQueue
     events:
       - sqs:
           arn:
@@ -30,8 +33,6 @@ functions:
               - eventQueue
               - Arn
           batchSize: 10
-    iamRoleStatements:
-      Effect: Allow
 
 resources:
   Resources:
@@ -39,3 +40,31 @@ resources:
       Type: "AWS::SQS::Queue"
       Properties:
         QueueName: events
+
+    dlqBucket:
+      Type: "AWS::S3::Bucket"
+      Properties: 
+        BucketName: "event-dlq-bucket"
+
+    sqsRole:
+      Type: "AWS::IAM::Role"
+      Properties:
+        RoleName: "example-serverless-sqs-role"
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action: sts:AssumeRole
+        ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
+        Policies:
+          - PolicyName: specificPermissons
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action: "*"
+                  Resource: "*"
