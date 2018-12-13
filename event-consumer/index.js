@@ -78,6 +78,7 @@ const sendEventToEndpoint = async convertedEvent => {
   };
   const response = await fetch(ENDPOINT_URL, params);
   const json = await response.json();
+  // TODO: more complex retry/dlq logic can be added to address 5XX vs 4XX responses 
   return { statusCode: response.status, body: json };
 };
 

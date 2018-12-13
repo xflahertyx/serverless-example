@@ -45,7 +45,6 @@ const parseXmlToJson = event => {
 };
 
 const handler = async event => {
-  console.log('urur', QUEUE_URL);
   sqs = new AWS.SQS();
   const body = event.body || event;
   try {

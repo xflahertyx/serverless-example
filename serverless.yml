@@ -1,3 +1,4 @@
+service: serverless-example
 provider:
   name: aws
   runtime: nodejs8.10
